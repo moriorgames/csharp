@@ -1,4 +1,4 @@
-﻿using Xunit;
+using Xunit;
 
 namespace Domain.Test;
 
@@ -9,6 +9,6 @@ public class PaymentTest
     {
         var payment = new Payment();
 
-        Assert.True(true);
+        Assert.True(false);
     }
 }
