@@ -2,7 +2,7 @@ using Domain.Entity;
 using Domain.ValueObject;
 using Xunit;
 
-namespace Domain.Test;
+namespace Domain.Test.Entity;
 
 public class PaymentTest
 {
