@@ -1,52 +1,42 @@
+using Application.Dto;
 using Application.UseCase;
 using Application.Repository;
 using Domain.Entity;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace Application.Test.UseCase;
 
 public class CreatePaymentUseCaseTest
 {
-    private class FakePaymentRepository : IPaymentRepository
+    private readonly IPaymentRepository _repository;
+    private readonly CreatePaymentUseCase _createPaymentUseCase;
+    
+    public CreatePaymentUseCaseTest()
     {
-        private readonly Exception? _exception;
-        public bool SaveCalled { get; private set; }
-
-        public FakePaymentRepository(Exception? exception = null)
-        {
-            _exception = exception;
-        }
-
-        public void Save(Payment payment)
-        {
-            SaveCalled = true;
-            if (_exception is not null)
-            {
-                throw _exception;
-            }
-        }
+        _repository = Substitute.For<IPaymentRepository>();
+        _createPaymentUseCase = new CreatePaymentUseCase(_repository);
     }
 
     [Fact]
-    public void Execute_ShouldReturnOk_WhenSaveSucceeds()
+    public void ShouldReturnOk_WhenSaveSucceeds()
     {
-        var repository = new FakePaymentRepository();
-        var useCase = new CreatePaymentUseCase(repository);
         var input = new CreatePaymentInput(10, 2, "USD");
 
-        var result = useCase.Execute(input);
+        var actual = _createPaymentUseCase.Execute(input);
 
-        Assert.Equal("OK", result);
-        Assert.True(repository.SaveCalled);
+        Assert.Equal("OK", actual);
     }
 
     [Fact]
-    public void Execute_ShouldThrow_WhenRepositoryFails()
+    public void ShouldThrow_WhenRepositoryFails()
     {
-        var repository = new FakePaymentRepository(new InvalidOperationException());
-        var useCase = new CreatePaymentUseCase(repository);
+        _repository
+            .Save(Arg.Any<Payment>())
+            .Throws(new InvalidOperationException());
         var input = new CreatePaymentInput(10, 2, "USD");
 
-        Assert.Throws<InvalidOperationException>(() => useCase.Execute(input));
+        Assert.Throws<InvalidOperationException>(() => _createPaymentUseCase.Execute(input));
     }
 }

@@ -4,5 +4,5 @@ using Domain.Entity;
 
 public interface IPaymentRepository
 {
-    void Save(Payment payment);
+    bool Save(Payment payment);
 }

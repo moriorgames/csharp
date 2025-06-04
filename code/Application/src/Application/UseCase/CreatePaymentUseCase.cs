@@ -1,20 +1,13 @@
+using Application.Dto;
+
 namespace Application.UseCase;
 
-using Application.Repository;
+using Repository;
 using Domain.Entity;
 using Domain.ValueObject;
 
-public readonly record struct CreatePaymentInput(int AmountValue, int Exponent, string Currency);
-
-public class CreatePaymentUseCase
+public class CreatePaymentUseCase(IPaymentRepository repository)
 {
-    private readonly IPaymentRepository _repository;
-
-    public CreatePaymentUseCase(IPaymentRepository repository)
-    {
-        _repository = repository;
-    }
-
     public string Execute(CreatePaymentInput input)
     {
         var amount = new Amount(input.AmountValue, input.Exponent);
@@ -22,7 +15,7 @@ public class CreatePaymentUseCase
         var money = new Money(amount, currency);
         var payment = new Payment(Guid.NewGuid().ToString(), money);
 
-        _repository.Save(payment);
+        repository.Save(payment);
         return "OK";
     }
 }
