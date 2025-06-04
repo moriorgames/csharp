@@ -7,8 +7,12 @@ public class PaymentTest
     [Fact]
     public void ShouldCreatePayment()
     {
-        var payment = new Payment();
+        var amount = new Amount(10, 2);
+        var currency = new Currency("USD");
+        var money = new Money(amount, currency);
+        var payment = new Payment("pay-id", money);
 
-        Assert.True(false);
+        Assert.Equal("pay-id", payment.Id);
+        Assert.Equal(money, payment.Amount);
     }
 }
