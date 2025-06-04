@@ -9,6 +9,6 @@ public class PaymentTest
     {
         var payment = new Payment();
 
-        Assert.True(true);
+        Assert.True(false);
     }
 }
